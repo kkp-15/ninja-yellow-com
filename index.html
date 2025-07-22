@@ -15,7 +15,6 @@
   </script>
 
   <style>
-    /* （省略せずにすべてのスタイルを残します） */
     body {
       text-align: center;
       font-family: "Hiragino Kaku Gothic ProN", sans-serif;
@@ -150,13 +149,32 @@
     }
 
     function randomizeBoard() {
+      let isTooEasy;
       do {
+        // 初期化
         cells.forEach(cell => cell.classList.remove('on'));
+
+        // ランダムに5～14回クリック
         for (let i = 0; i < Math.floor(Math.random() * 10) + 5; i++) {
           let randomIndex = Math.floor(Math.random() * (size * size));
           cells[randomIndex].click();
         }
-      } while (cells.every(cell => cell.classList.contains('on')));
+
+        // ワンタップでクリアできるかチェック
+        isTooEasy = cells.some((cell, idx) => {
+          const testStates = cells.map(c => c.classList.contains('on'));
+          const x = idx % size;
+          const y = Math.floor(idx / size);
+          const positions = [idx, idx - 1, idx + 1, idx - size, idx + size];
+          positions.forEach(pos => {
+            if (pos >= 0 && pos < size * size && isValidMove(x, y, pos)) {
+              testStates[pos] = !testStates[pos];
+            }
+          });
+          return testStates.every(state => state === true);
+        });
+
+      } while (cells.every(cell => cell.classList.contains('on')) || isTooEasy);
     }
 
     function startGame() {
