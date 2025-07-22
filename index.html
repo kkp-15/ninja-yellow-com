@@ -4,7 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>イエローコンプリート</title>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2LM85GJN0L"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2LM85GJN0L');
+  </script>
+
   <style>
+    /* （省略せずにすべてのスタイルを残します） */
     body {
       text-align: center;
       font-family: "Hiragino Kaku Gothic ProN", sans-serif;
@@ -12,13 +23,11 @@
       margin: 0;
       padding: 2rem;
     }
-
     h1 {
       font-size: 2rem;
       color: #fbc02d;
       margin-bottom: 1rem;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 80px);
@@ -26,7 +35,6 @@
       justify-content: center;
       margin: 1rem auto;
     }
-
     .cell {
       width: 80px;
       height: 80px;
@@ -40,23 +48,19 @@
       transition: background-color 0.2s ease;
       border: 2px solid #c0c0c0;
     }
-
     .cell.on {
       background-color: #ffeb3b;
       border-color: #fdd835;
     }
-
     #message {
       font-size: 1.5rem;
       margin: 1rem;
       color: #444;
     }
-
     #timer {
       font-size: 1.2rem;
       color: #f57f17;
     }
-
     button {
       background-color: #fdd835;
       border: none;
@@ -66,21 +70,17 @@
       cursor: pointer;
       margin-top: 1rem;
     }
-
     button:hover {
       background-color: #fbc02d;
     }
-
     #shareBtn {
       display: none;
       margin-top: 1rem;
     }
-
     #footer {
       margin-top: 3rem;
       font-size: 0.9rem;
     }
-
     #footer a {
       text-decoration: none;
       color: #1da1f2;
