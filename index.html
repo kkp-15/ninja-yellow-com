@@ -95,7 +95,7 @@
   <button onclick="startGame()">スタート</button>
   <div id="shareBtn"></div>
   <div id="footer">
-    <a href="https://x.com/kkp_webninja" target="_blank">X @KKP</a>
+    <a href="https://x.com/kkp_webninja" target="_blank">X @kkp_webninja</a>
   </div>
 
   <script>
@@ -108,7 +108,6 @@
     let timer;
     let timeLeft = 60;
     let gameActive = false;
-    let startTime = 0;
 
     function createGrid() {
       grid.innerHTML = '';
@@ -171,7 +170,6 @@
       shareBtn.style.display = 'none';
       createGrid();
       randomizeBoard();
-      startTime = Date.now();
       timer = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = timeLeft;
@@ -188,7 +186,7 @@
       gameActive = false;
 
       if (clearTime !== null) {
-        const shareText = `イエローコンプリート🎉 ${clearTime}秒でクリア！\n👇挑戦はこちら👇\nhttps://kkp-15.github.io/ninja-yellow-com/`;
+        const shareText = `イエローコンプリート🎉 ${clearTime}秒でクリア！\n@kkp_webninja\n👇挑戦はこちら👇\nhttps://kkp-15.github.io/ninja-yellow-com/`;
         const encoded = encodeURIComponent(shareText);
         const url = `https://twitter.com/intent/tweet?text=${encoded}`;
         shareBtn.innerHTML = `<a href="${url}" target="_blank"><button>結果をXでシェア</button></a>`;
