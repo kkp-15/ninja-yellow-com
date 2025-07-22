@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>イエローコンプリート</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+      background-color: #fffde7;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #fbc02d;
+      margin-bottom: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      gap: 8px;
+      justify-content: center;
+      margin: 1rem auto;
+    }
+
+    .cell {
+      width: 80px;
+      height: 80px;
+      background-color: #e0e0e0;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      border: 2px solid #c0c0c0;
+    }
+
+    .cell.on {
+      background-color: #ffeb3b;
+      border-color: #fdd835;
+    }
+
+    #message {
+      font-size: 1.5rem;
+      margin: 1rem;
+      color: #444;
+    }
+
+    #timer {
+      font-size: 1.2rem;
+      color: #f57f17;
+    }
+
+    button {
+      background-color: #fdd835;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background-color: #fbc02d;
+    }
+
+    #shareBtn {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    #footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+    }
+
+    #footer a {
+      text-decoration: none;
+      color: #1da1f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>イエローコンプリート</h1>
+  <div class="grid" id="grid"></div>
+  <p id="message">スタートでゲーム開始！</p>
+  <p>残り時間: <span id="timer">60</span> 秒</p>
+  <button onclick="startGame()">スタート</button>
+  <div id="shareBtn"></div>
+  <div id="footer">
+    <a href="https://x.com/kkp_webninja" target="_blank">X @KKP</a>
+  </div>
+
+  <script>
+    const grid = document.getElementById('grid');
+    const message = document.getElementById('message');
+    const timerDisplay = document.getElementById('timer');
+    const shareBtn = document.getElementById('shareBtn');
+    const size = 3;
+    let cells = [];
+    let timer;
+    let timeLeft = 60;
+    let gameActive = false;
+    let startTime = 0;
+
+    function createGrid() {
+      grid.innerHTML = '';
+      cells = [];
+      for (let i = 0; i < size * size; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.dataset.index = i;
+        cell.addEventListener('click', toggleCells);
+        grid.appendChild(cell);
+        cells.push(cell);
+      }
+    }
+
+    function toggleCells(event) {
+      if (!gameActive) return;
+      let index = parseInt(event.target.dataset.index);
+      let x = index % size;
+      let y = Math.floor(index / size);
+      let positions = [index, index - 1, index + 1, index - size, index + size];
+      positions.forEach(pos => {
+        if (pos >= 0 && pos < size * size && isValidMove(x, y, pos)) {
+          cells[pos].classList.toggle('on');
+        }
+      });
+      checkWin();
+    }
+
+    function isValidMove(x, y, pos) {
+      let px = pos % size;
+      let py = Math.floor(pos / size);
+      return Math.abs(px - x) + Math.abs(py - y) === 1 || pos === x + y * size;
+    }
+
+    function checkWin() {
+      if (cells.every(cell => cell.classList.contains('on'))) {
+        const clearTime = 60 - timeLeft;
+        endGame(`🎉 クリア！${clearTime}秒で達成！`, '#fff9c4', clearTime);
+      }
+    }
+
+    function randomizeBoard() {
+      do {
+        cells.forEach(cell => cell.classList.remove('on'));
+        for (let i = 0; i < Math.floor(Math.random() * 10) + 5; i++) {
+          let randomIndex = Math.floor(Math.random() * (size * size));
+          cells[randomIndex].click();
+        }
+      } while (cells.every(cell => cell.classList.contains('on')));
+    }
+
+    function startGame() {
+      clearInterval(timer);
+      document.body.style.backgroundColor = '#fffde7';
+      message.textContent = '';
+      timeLeft = 60;
+      timerDisplay.textContent = timeLeft;
+      gameActive = true;
+      shareBtn.innerHTML = '';
+      shareBtn.style.display = 'none';
+      createGrid();
+      randomizeBoard();
+      startTime = Date.now();
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          endGame('時間切れ！⏳', '#ffe0e0');
+        }
+      }, 1000);
+    }
+
+    function endGame(text, bgColor, clearTime = null) {
+      clearInterval(timer);
+      message.textContent = text;
+      document.body.style.backgroundColor = bgColor;
+      gameActive = false;
+
+      if (clearTime !== null) {
+        const shareText = `イエローコンプリート🎉 ${clearTime}秒でクリア！\n👇挑戦はこちら👇\nhttps://kkp-15.github.io/YellowComplete/`;
+        const encoded = encodeURIComponent(shareText);
+        const url = `https://twitter.com/intent/tweet?text=${encoded}`;
+        shareBtn.innerHTML = `<a href="${url}" target="_blank"><button>結果をXでシェア</button></a>`;
+        shareBtn.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
